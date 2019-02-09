@@ -12,13 +12,13 @@ void ColoredSort::insertionSort() {
     REP(i, sz - 1) {
         if (current_state[i] > current_state[i + 1]) {
             int j = i;
-            while (current_state[j] > current_state[j + 1]) {
+            while (current_state[j] > current_state[j + 1] && j>=0) {
                 swap(current_state[j], current_state[j + 1]);
                 j--;
-            }
             cv::Mat buf(1, current_state.size(), CV_32SC1,
                         current_state.data());
             v.push_back(buf);
+            }
         }
     }
 }
@@ -51,6 +51,31 @@ void ColoredSort::mergeSort(int begin, int end) {
     return;
 }
 
+void ColoredSort::shellSort() {
+    vector<int> gaps{(sz - 1) / 3};
+    for (int i = (gaps[0] - 1) / 3; i >= 1; i = (i - 1) / 3) {
+        gaps.push_back(i);
+    }
+
+    for (auto &&gap : gaps) {
+        for (int i = 0; i < sz / gap - 1; i++) {
+            REP(k, gap) {
+                int j = i;
+                while (current_state[j * gap + k] >
+                       current_state[(j + 1) * gap + k] && j>=0) {
+                    swap(current_state[j * gap + k],
+                         current_state[(j + 1) * gap + k]);
+                    cv::Mat buf(1, current_state.size(), CV_32SC1,
+                                current_state.data());
+                    v.push_back(buf);
+                    j--;
+                }
+            }
+        }
+    }
+    return;
+}
+
 void ColoredSort::bubbleSort() {
     REP(i, sz - 1) {
         for (int j = 0; j < sz - 1; j++) {
@@ -78,8 +103,9 @@ void ColoredSort::rotate90() {
 
 int main(int argc, char **argv) {
     ColoredSort cs = ColoredSort(atoi(argv[1]));
-    cs.bubbleSort();
+    // cs.bubbleSort();
     // cs.insertionSort();
     // cs.mergeSort(0, atoi(argv[1]));
+    cs.shellSort();
     cs.save_result("test.png");
 }

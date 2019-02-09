@@ -11,6 +11,7 @@ class ColoredSort {
     void bubbleSort();
     void insertionSort();
     void mergeSort(int begin, int end);
+    void shellSort();
     void save_result(char *filename);
     void rotate90();
 
